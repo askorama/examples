@@ -13,16 +13,18 @@ function App () {
           <div className='text-sm text-neutral-400'>
             {
               searchResults
-              ? <div> {searchResults?.count ?? 0} results in {searchResults?.elapsed?.formatted} </div>
-              : <div> No results </div>
+                ? <div> {searchResults?.count ?? 0} results in {searchResults?.elapsed?.formatted} </div>
+                : <div> No results </div>
             }
           </div>
           <ul className='mt-8 text-sm h-96 overflow-scroll'>
             {searchResults?.hits?.map((hit, i) => (
-              <li key={hit.id} className={clx('rounded-md mb-4 px-2 py-1', {
-                'bg-neutral-900': i % 2 === 0,
-                'bg-neutral-800': i % 2 === 1
-              })}>
+              <li
+                key={hit.id} className={clx('rounded-md mb-4 px-2 py-1', {
+                  'bg-neutral-900': i % 2 === 0,
+                  'bg-neutral-800': i % 2 === 1
+                })}
+              >
                 <div className='font-bold'>
                   {hit.document.iata} - {hit.document.city}
                 </div>
