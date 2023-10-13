@@ -4,6 +4,7 @@ import { search } from '@orama/orama'
 import { FaLocationPin } from 'react-icons/fa6'
 import { orama } from '../../lib/orama'
 import { DrawControl } from '../DrawControl'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 export function OramaMap ({ onPolygonChange }) {
   const [polygon, setPolygon] = useState({})
@@ -85,11 +86,11 @@ export function OramaMap ({ onPolygonChange }) {
       mapStyle='mapbox://styles/mapbox/dark-v9'
     >
       <DrawControl
-        position='top-left'
+        // position='top-left'
         displayControlsDefault={false}
         controls={{
           polygon: true,
-          trash: true
+          trash: true,
         }}
         defaultMode='draw_polygon'
         onCreate={onUpdate}
