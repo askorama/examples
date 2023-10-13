@@ -55,6 +55,7 @@ export function OramaMap ({ onPolygonChange }) {
       }
       return newPolygon
     })
+    setSearchResults(null)
   }, [])
 
   const pins = searchResults?.hits?.map((hit) => (
@@ -89,7 +90,7 @@ export function OramaMap ({ onPolygonChange }) {
         displayControlsDefault={false}
         controls={{
           polygon: true,
-          trash: true,
+          trash: true
         }}
         defaultMode='draw_polygon'
         onCreate={onUpdate}

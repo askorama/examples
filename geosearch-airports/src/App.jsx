@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import clx from 'classnames'
 import { OramaMap } from './components/Map'
 
 function App () {
@@ -14,7 +13,7 @@ function App () {
         </div>
 
         <div className='absolute top-0 left-0 h-full border-r border-[#37343C] bg-[#28233299] p-8 w-96 backdrop-blur-md shadow-black shadow-2xl'>
-          <a href='https://oramasearch.com' target='_blank'>
+          <a href='https://oramasearch.com' target='_blank' rel='noreferrer'>
             <img src='/orama-geosearch.svg' className='w-48' />
           </a>
           <h1 className='text-2xl font-bold mt-8'> Airports </h1>

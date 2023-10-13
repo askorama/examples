@@ -1,0 +1,16 @@
+{
+  "name": "orama-examples",
+  "version": "0.0.1",
+  "description": "Orama Examples",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {},
+  "author": {
+    "name": "Michele Riva",
+    "email": "michele.riva@oramasearch.com",
+    "url": "https://github.com/MicheleRiva",
+    "author": true
+  },
+  "license": "Apache-2.0"
+}
