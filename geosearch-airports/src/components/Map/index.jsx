@@ -66,7 +66,7 @@ export function OramaMap ({ onPolygonChange }) {
         e.originalEvent.stopPropagation()
       }}
     >
-      <FaLocationPin className='w-6 h-6 text-red-500' />
+      <FaLocationPin className='w-6 h-6 text-violet-500' />
     </Marker>
   ))
 
@@ -81,11 +81,11 @@ export function OramaMap ({ onPolygonChange }) {
         bearing: 0,
         pitch: 0
       }}
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%', height: '100vh' }}
       mapStyle='mapbox://styles/mapbox/dark-v9'
     >
       <DrawControl
-        position='top-left'
+        position='top-right'
         displayControlsDefault={false}
         controls={{
           polygon: true,

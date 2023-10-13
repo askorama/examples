@@ -7,9 +7,17 @@ function App () {
 
   return (
     <>
-      <div className='w-full min-h-screen grid grid-cols-[500px_1fr] bg-neutral-900 text-zinc-50'>
-        <div className='bg-neutral-950 p-10'>
-          <h1 className='text-2xl font-bold'> Search Airports </h1>
+      <div className='w-full min-h-screen bg-zinc-950  text-zinc-50'>
+
+        <div className='w-full min-h-screen'>
+          <OramaMap onPolygonChange={setSearchResults} />
+        </div>
+
+        <div className='absolute top-0 left-0 h-full border-r border-[#37343C] bg-[#28233299] p-8 w-96 backdrop-blur-md shadow-black shadow-2xl'>
+          <a href='https://oramasearch.com' target='_blank'>
+            <img src='/orama-geosearch.svg' className='w-48' />
+          </a>
+          <h1 className='text-2xl font-bold mt-8'> Airports </h1>
           <div className='text-sm text-neutral-400'>
             {
               searchResults
@@ -17,26 +25,22 @@ function App () {
                 : <div> No results </div>
             }
           </div>
-          <ul className='mt-8 text-sm h-96 overflow-scroll'>
-            {searchResults?.hits?.map((hit, i) => (
-              <li
-                key={hit.id} className={clx('rounded-md mb-4 px-2 py-1', {
-                  'bg-neutral-900': i % 2 === 0,
-                  'bg-neutral-800': i % 2 === 1
-                })}
-              >
-                <div className='font-bold'>
-                  {hit.document.iata} - {hit.document.city}
-                </div>
-                <div className='text-neutral-400'>
-                  {hit.document.country}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className='w-full'>
-          <OramaMap onPolygonChange={setSearchResults} />
+          <div>
+            <ul className='mt-8 text-sm w-full h-96 overflow-scroll'>
+              {searchResults?.hits?.map((hit, i) => (
+                <li
+                  key={hit.id} className='rounded-md mb-2 px-2 py-1 bg-[#342F43]'
+                >
+                  <div className='font-bold'>
+                    {hit.document.iata} - {hit.document.city}
+                  </div>
+                  <div className='text-neutral-400'>
+                    {hit.document.country}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </>
