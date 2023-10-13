@@ -73,7 +73,7 @@ export function OramaMap ({ onPolygonChange }) {
   return (
     <Map
       mapLib={import('mapbox-gl')}
-      mapboxAccessToken={import.meta.env.MAPBOX_TOKEN}
+      mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
       initialViewState={{
         latitude: 40,
         longitude: -100,
