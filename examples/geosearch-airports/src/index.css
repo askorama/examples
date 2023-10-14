@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+ul::-webkit-scrollbar {
+    @apply w-2;
+}
+
+ul::-webkit-scrollbar-track {
+    @apply bg-transparent;
+}
+
+ul::-webkit-scrollbar-thumb {
+    @apply bg-zinc-950 rounded-lg;
+}
+
+ul::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-950;
+}
