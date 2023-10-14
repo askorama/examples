@@ -25,7 +25,7 @@ function App () {
             }
           </div>
           <div>
-            <ul className='mt-8 text-sm w-full h-96 overflow-scroll'>
+            <ul className='mt-8 text-sm w-full h-96 overflow-auto'>
               {searchResults?.hits?.map((hit, i) => (
                 <li
                   key={hit.id} className='rounded-md mb-2 px-2 py-1 bg-[#342F43]'
