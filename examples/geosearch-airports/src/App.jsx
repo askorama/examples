@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { OramaMap } from './components/Map'
 
-function App () {
+function App() {
   const [searchResults, setSearchResults] = useState()
 
   return (
@@ -20,13 +20,13 @@ function App () {
           <div className='text-sm text-neutral-400'>
             {
               searchResults
-                ? <div> {searchResults?.count ?? 0} results in {searchResults?.elapsed?.formatted} </div>
+                ? <div> {searchResults?.length ?? 0} </div>
                 : <div> No results </div>
             }
           </div>
           <div>
             <ul className='mt-8 text-sm w-full h-96 overflow-auto'>
-              {searchResults?.hits?.map((hit, i) => (
+              {searchResults?.map((hit, i) => (
                 <li
                   key={hit.id} className='rounded-md mb-2 px-2 py-1 bg-[#342F43]'
                 >

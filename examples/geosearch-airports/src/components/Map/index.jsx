@@ -1,35 +1,38 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Map, { Marker } from 'react-map-gl'
 import { search } from '@orama/orama'
 import { FaLocationPin } from 'react-icons/fa6'
 import { orama } from '../../lib/orama'
 import { DrawControl } from '../DrawControl'
 
-export function OramaMap ({ onPolygonChange }) {
-  const [polygon, setPolygon] = useState({})
-  const [searchResults, setSearchResults] = useState()
+const VITE_MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
 
-  const onUpdate = useCallback(e => {
-    setPolygon(currPolygon => {
-      const newPolygon = { ...currPolygon }
-      for (const point of e.features) {
-        newPolygon[point.id] = point
-      }
-      return newPolygon
-    })
-  }, [])
+if (!VITE_MAPBOX_TOKEN) {
+  throw Error('VITE_MAPBOX_TOKEN not set in .env file')
+}
+
+export function OramaMap({ onPolygonChange }) {
+  const [polygons, setPolygons] = useState({})
+  const [uniqueLocations, setUniqueLocations] = useState([])
 
   useEffect(() => {
-    const shape = Object.values(polygon).shift()
+    const polygonIds = Object.keys(polygons)
 
-    if (shape) {
+    const oramaPromises = []
+
+    for (const id of polygonIds) {
+      const polygon = polygons[id]
       const coordinates = []
 
-      for (const point of shape.geometry.coordinates[0]) {
+      if (!polygon.geometry.coordinates || !polygon.geometry.coordinates[0]) {
+        return
+      }
+
+      for (const point of polygon.geometry.coordinates[0]) {
         coordinates.push({ lat: point[1], lon: point[0] })
       }
 
-      search(orama, {
+      oramaPromises.push(search(orama, {
         limit: 10_000,
         where: {
           location: {
@@ -40,41 +43,68 @@ export function OramaMap ({ onPolygonChange }) {
         }
       })
         .then((data) => {
-          setSearchResults(data)
-          onPolygonChange(searchResults)
+          if (!data || !data.hits) {
+            return
+          }
+
+          return { id: polygon.id, hits: data.hits }
         })
-        .catch(console.error)
+        .catch(console.error))
+
     }
-  }, [polygon])
 
-  const onDelete = useCallback(e => {
-    setPolygon(currPolygon => {
-      const newPolygon = { ...currPolygon }
-      for (const point of e.features) {
-        delete newPolygon[point.id]
-      }
-      return newPolygon
+    // Finally update the search results for all polygons
+    Promise.all(oramaPromises).then((results) => {
+      const newSearchResults = {}
+      results.forEach((result) => {
+        if (!result) {
+          return
+        }
+        newSearchResults[result.id] = result.hits
+      })
+
+      const uniqueLocationIds = new Set()
+      const uniqueLocations = []
+
+      // Ensure that locations aren't added twice as this will throw an error
+      Object.keys(newSearchResults).forEach((polygonId) => {
+        newSearchResults[polygonId].forEach((location) => {
+          if (!uniqueLocationIds.has(location)) {
+            uniqueLocationIds.add(location.id)
+            uniqueLocations.push(location)
+          }
+        })
+      })
+
+      onPolygonChange(uniqueLocations)
+      setUniqueLocations(uniqueLocations)
     })
-    setSearchResults(null)
-  }, [])
 
-  const pins = searchResults?.hits?.map((hit) => (
-    <Marker
-      key={hit.id}
-      longitude={hit.document.location.lon}
-      latitude={hit.document.location.lat}
-      onClick={(e) => {
-        e.originalEvent.stopPropagation()
-      }}
-    >
-      <FaLocationPin className='w-6 h-6 text-violet-500' />
-    </Marker>
-  ))
+  }, [polygons])
 
-  return (
+
+  const pinMarkers = useMemo(() => {
+    if (!uniqueLocations || uniqueLocations.length === 0) {
+      return []
+    }
+
+    return uniqueLocations.map((hit) => (
+      <Marker
+        key={hit.id}
+        longitude={hit.document.location.lon}
+        latitude={hit.document.location.lat}
+        onClick={(e) => {
+          e.originalEvent.stopPropagation()
+        }}
+      >
+        <FaLocationPin className='w-6 h-6 text-violet-500' />
+      </Marker>))
+  }, [uniqueLocations])
+
+  return <>
     <Map
       mapLib={import('mapbox-gl')}
-      mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+      mapboxAccessToken={VITE_MAPBOX_TOKEN}
       initialViewState={{
         latitude: 40,
         longitude: -100,
@@ -86,18 +116,33 @@ export function OramaMap ({ onPolygonChange }) {
       mapStyle='mapbox://styles/mapbox/dark-v9'
     >
       <DrawControl
-        position='top-right'
-        displayControlsDefault={false}
-        controls={{
-          polygon: true,
-          trash: true
+        onCreate={(polygon) => {
+          setPolygons({
+            ...polygons,
+            [polygon.id]: polygon
+          })
         }}
-        defaultMode='draw_polygon'
-        onCreate={onUpdate}
-        onUpdate={onUpdate}
-        onDelete={onDelete}
+        onUpdate={(polygon) => {
+          setPolygons({
+            ...polygons,
+            [polygon.id]: polygon
+          })
+        }}
+        onDelete={(deletedIds) => {
+          setPolygons((currentPolygons) => {
+
+            const newPolygons = {}
+            Object.keys(currentPolygons).forEach((polygonId) => {
+              if (!deletedIds.includes(polygonId)) {
+                newPolygons[polygonId] = currentPolygons[polygonId]
+              }
+            })
+
+            return newPolygons
+          })
+        }}
       />
-      {pins}
+      {pinMarkers}
     </Map>
-  )
+  </>
 }
