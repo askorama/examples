@@ -1,6 +1,6 @@
 import { TerraDraw, TerraDrawMapboxGLAdapter, TerraDrawPolygonMode, TerraDrawSelectMode } from 'terra-draw'
 import { useMap } from 'react-map-gl';
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 export function DrawControl(props) {
 
@@ -39,13 +39,14 @@ export function DrawControl(props) {
           fillColor: '#f6cd63',
           outlineColor: '#faa38f',
           outlineWidth: 3,
-          fillOpacity: 0.2,
+          fillOpacity: 0.1,
           closingPointWidth: 5,
           closingPointColor: '#faa38f',
           closingPointOutlineWidth: 2,
           closingPointOutlineColor: '#f5f5f5',
         }
       }), new TerraDrawSelectMode({
+        dragEventThrottle: 3,
         flags: {
           polygon: {
             feature: {
@@ -144,7 +145,6 @@ export function DrawControl(props) {
         id="draw-select"
         title="Select Polygon"
         disabled={!draw}
-
         onClick={() => {
           if (draw) {
             draw.setMode('select');

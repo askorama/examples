@@ -20,7 +20,7 @@ function App() {
           <div className='text-sm text-neutral-400'>
             {
               searchResults
-                ? <div> {searchResults?.length ?? 0} </div>
+                ? <div> {searchResults?.length ?? 0} results </div>
                 : <div> No results </div>
             }
           </div>
